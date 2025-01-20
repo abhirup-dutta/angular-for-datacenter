@@ -1,29 +1,32 @@
-<body cds-theme="light">
 <div class="container-fluid">
 <h1>Cluster Configuration Details</h1>
-<form>
+<form #userForm="ngForm">
 	<div class="form-group">
 		<label>Cluster Name</label>
-		<input type="text" class="form-control" value="clusterNameInput">
+		<input type="text" name="clusterName" class="form-control" ngModel>
 	</div>
 	<div class="form-group">
 		<label>Server Model</label>
-		<select>
-			<option *ngFor="let serverModel of serverModels" value="serverModelInput">{{ serverModel }}</option>
+		<select name="serverModel" ngModel>
+			<option *ngFor="let serverModel of serverModels">{{ serverModel }}</option>
 		</select>
 	</div>
 	<div class="form-group">
 		<label>Number of Servers</label>
-		<input type="number" min="1" max="12" class="form-control" value="numberInput">
+		<input type="number" name="numberOfServers" min="1" max="12" class="form-control" ngModel>
 	</div>
 	<div class="mb-3">
 		<label>Configuration</label>
 		<div class="form-check" *ngFor="let type of configTypes">
-			<input class="form-check-input" type="radio" value="{{ type }}">
+			<input class="form-check-input" name="configType" type="radio" value="{{ type }}"ngModel>
 			<label class="form-check-label">{{ type }}</label>
 		</div>
 	</div>
 	<button class="btn btn-primary" type="submit">Configure</button>
 </form>
+<hr>
+	<h4>Value Collected from the Form:</h4>
+	<div>
+		{{ userForm.value | json }}
+	</div>
 </div>
-</body>

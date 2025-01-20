@@ -28,6 +28,9 @@
             ],
             "styles": [
               "src/styles.css"
+              "node_modules/@cds/core/global.min.css",
+              "node_modules/@cds/core/styles/theme.dark.min.css",
+              "node_modules/@clr/ui/clr-ui.min.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
@@ -91,6 +94,9 @@
             ],
             "styles": [
               "src/styles.css"
+              "node_modules/@cds/core/global.min.css",
+              "node_modules/@cds/core/styles/theme.dark.min.css",
+              "node_modules/@clr/ui/clr-ui.min.css"
             ],
             "scripts": []
           }

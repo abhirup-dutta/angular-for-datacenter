@@ -3,22 +3,22 @@
 <form #userForm="ngForm">
 	<div class="form-group">
 		<label>Cluster Name</label>
-		<input type="text" name="clusterName" class="form-control" ngModel>
+		<input type="text" name="clusterName" class="form-control" [(ngModel)]="clusterModel.name">
 	</div>
 	<div class="form-group">
 		<label>Server Model</label>
-		<select name="serverModel" ngModel>
+		<select name="serverModel" [(ngModel)]="clusterModel.serverModel">
 			<option *ngFor="let serverModel of serverModels">{{ serverModel }}</option>
 		</select>
 	</div>
 	<div class="form-group">
 		<label>Number of Servers</label>
-		<input type="number" name="numberOfServers" min="1" max="12" class="form-control" ngModel>
+		<input type="number" name="numberOfServers" min="1" max="12" class="form-control" [(ngModel)]="clusterModel.numberOfServers">
 	</div>
 	<div class="mb-3">
 		<label>Configuration</label>
 		<div class="form-check" *ngFor="let type of configTypes">
-			<input class="form-check-input" name="configType" type="radio" value="{{ type }}"ngModel>
+			<input class="form-check-input" name="configType" type="radio" value="{{ type }}" [(ngModel)]="clusterModel.config">
 			<label class="form-check-label">{{ type }}</label>
 		</div>
 	</div>
@@ -28,5 +28,9 @@
 	<h4>Value Collected from the Form:</h4>
 	<div>
 		{{ userForm.value | json }}
+	</div>
+	<h4>Value Bound to Model:</h4>
+	<div>
+		{{ clusterModel | json }}
 	</div>
 </div>

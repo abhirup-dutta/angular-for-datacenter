@@ -3,7 +3,8 @@
 <form #userForm="ngForm">
 	<div class="form-group">
 		<label>Cluster Name</label>
-		<input type="text" name="clusterName" class="form-control" [(ngModel)]="clusterModel.name">
+		<input type="text" name="clusterName" required class="form-control is-invalid" #name=ngModel [class.is-invalid]="name.invalid && name.touched" [(ngModel)]="clusterModel.name">
+		<small class="text-danger" [class.d-none]="name.valid || name.untouched">Name is required</small>
 	</div>
 	<div class="form-group">
 		<label>Server Model</label>
@@ -13,7 +14,8 @@
 	</div>
 	<div class="form-group">
 		<label>Number of Servers</label>
-		<input type="number" name="numberOfServers" min="1" max="12" class="form-control" [(ngModel)]="clusterModel.numberOfServers">
+		<input type="number" name="numberOfServers" min="1" max="12" required class="form-control is-invalid" #numberOfServers=ngModel [class.is-invalid]="numberOfServers.invalid && numberOfServers.touched" [(ngModel)]="clusterModel.numberOfServers">
+		<small class="text-danger" [class.d-none]="numberOfServers.valid || numberOfServers.untouched">1 to 12 servers supported</small>
 	</div>
 	<div class="mb-3">
 		<label>Configuration</label>

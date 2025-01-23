@@ -1,6 +1,6 @@
 <div class="container-fluid">
 <h1>Cluster Configuration Details</h1>
-<form #userForm="ngForm">
+<form #userForm="ngForm" novalidate (ngSubmit)="onSubmit(userForm)">
 	<div class="form-group">
 		<label>Cluster Name</label>
 		<input type="text" name="clusterName" required class="form-control is-invalid" #name=ngModel [class.is-invalid]="name.invalid && name.touched" [(ngModel)]="clusterModel.name">
@@ -17,14 +17,20 @@
 		<input type="number" name="numberOfServers" min="1" max="12" required class="form-control is-invalid" #numberOfServers=ngModel [class.is-invalid]="numberOfServers.invalid && numberOfServers.touched" [(ngModel)]="clusterModel.numberOfServers">
 		<small class="text-danger" [class.d-none]="numberOfServers.valid || numberOfServers.untouched">1 to 12 servers supported</small>
 	</div>
-	<div class="mb-3">
+	<div class="mb-3" *ngIf="userForm.value.numberOfServers > 1; else configNotNeeded">
 		<label>Configuration</label>
 		<div class="form-check" *ngFor="let type of configTypes">
 			<input class="form-check-input" name="configType" type="radio" value="{{ type }}" [(ngModel)]="clusterModel.config">
 			<label class="form-check-label">{{ type }}</label>
 		</div>
 	</div>
-	<button class="btn btn-primary" type="submit">Configure</button>
+	<ng-template #configNotNeeded>
+	<div>
+		<label>Configuration</label><br>
+		<label>Standard with Single Server</label>
+	</div>
+	</ng-template>
+	<button class="btn btn-primary" type="submit" [disabled]="userForm.form.invalid">Configure</button>
 </form>
 <hr>
 	<h4>Value Collected from the Form:</h4>

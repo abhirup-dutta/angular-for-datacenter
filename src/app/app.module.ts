@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from "@clr/angular";
-
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -12,7 +12,9 @@ import { AppComponent } from './app.component';
 		BrowserModule,
 		CommonModule,
 		FormsModule,
-		ClarityModule
+		ClarityModule,
+		HttpClientModule,
+		HttpClient
 		],
 	providers: [],
 	boostrap: [AppComponent]

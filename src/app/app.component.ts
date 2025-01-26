@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, FormArray, NgForm, FormsModule } from '@angular/forms';
 import { Cluster } from './cluster';
+import { ImagingService } from './imaging.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,8 @@ export class AppComponent {
 
   clusterModel = new Cluster('cluster-1', 'HP', 2, 'Standard');
 
+  constructor(private _imagingService: ImagingService) {}
+
   onSubmit(userForm: NgForm) {
     console.log("Form Data Received:");
     console.log(userForm.value);
@@ -28,5 +31,12 @@ export class AppComponent {
       this.clusterModel.config = 'Standard';
     }
     console.log(this.clusterModel);
+
+    console.log('Sending data to imaging server ...');
+    this._imagingService.startImaging(this.clusterModel)
+      .subscribe(
+        data => console.log('Success!', data),
+        error => console.log('Failure!', error)
+        );
   }
 }

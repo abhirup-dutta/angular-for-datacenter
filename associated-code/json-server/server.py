@@ -10,11 +10,19 @@ class Server(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Headers', '*')
         self.end_headers()
+        print('printing headers of response ...')
+        print(str(self.headers))
         
     def do_HEAD(self):
         self._set_headers()
-        
+
+    def do_OPTIONS(self):
+        self._set_headers()
+        self.send_response(200, "ok")
+
     '''
     GET sends back a Hello world message
     curl http://localhost:8009
@@ -42,7 +50,7 @@ class Server(BaseHTTPRequestHandler):
         message['received'] = 'ok'
         
         # send the message back
-        self._set_headers()
+        self._set_headers();
         message_str = json.dumps(message)
         message_bytes = message_str.encode('utf-8')
         self.wfile.write(message_bytes)

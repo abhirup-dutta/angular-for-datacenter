@@ -19,6 +19,7 @@ export class AppComponent {
   configTypes = ['Standard' , 'High-Availability'];
 
   clusterModel = new Cluster('cluster-1', 'HP', 2, 'Standard');
+  errorMsg = '';
 
   constructor(private _imagingService: ImagingService) {}
 
@@ -35,8 +36,11 @@ export class AppComponent {
     console.log('Sending data to imaging server ...');
     this._imagingService.startImaging(this.clusterModel)
       .subscribe(
-        data => console.log('Success!', data),
-        error => console.log('Failure!', error)
+        data => {
+            console.log('Success!', data);
+            this.errorMsg = '';
+          },
+        error => this.errorMsg = error.statusText
         );
   }
 }

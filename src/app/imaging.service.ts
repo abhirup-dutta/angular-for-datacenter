@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Cluster } from './cluster';
+import { catchError, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,11 @@ export class ImagingService {
   constructor(private _http: HttpClient) { }
 
   startImaging(cluster: Cluster) {
-    return this._http.post<any>(this._url, cluster);
+    return this._http.post<any>(this._url, cluster)
+      .pipe(catchError(this.errorHandler));
+  }
+
+  errorHandler(error: HttpErrorResponse) {
+    return throwError(error);
   }
 }

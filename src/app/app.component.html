@@ -1,5 +1,14 @@
 <div class="container-fluid">
 <h1>Cluster Configuration Details</h1>
+<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
+  <div class="alert-items">
+    <div class="alert-item static">
+      <span class="alert-text">
+      	{{ errorMsg }}
+      </span>
+  	</div>
+  </div>
+</div>
 <form #userForm="ngForm" novalidate (ngSubmit)="onSubmit(userForm)">
 	<div class="form-group">
 		<label>Cluster Name</label>

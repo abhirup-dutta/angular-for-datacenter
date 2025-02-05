@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClarityModule, CdsIconModule } from "@clr/angular";
 import { ClarityIcons, errorStandardIcon  } from '@cds/core/icon';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 		BrowserModule,
 		CommonModule,
 		FormsModule,
+		ReactiveFormsModule,
 		ClarityModule,
 		CdsIconModule,
 		HttpClientModule,

@@ -11,32 +11,34 @@
 	  </div>
 	</div>
 
-	<form #userForm="ngForm" novalidate (ngSubmit)="onSubmit(userForm)">
+	<form [formGroup]="clusterForm" novalidate (ngSubmit)="onSubmit()">
 
 		<div class="form-group">
 			<label>Cluster Name</label>
-			<input type="text" name="clusterName" required class="form-control is-invalid" #name=ngModel [class.is-invalid]="name.invalid && name.touched" [(ngModel)]="clusterModel.name">
-			<small class="text-danger" [class.d-none]="name.valid || name.untouched">Name is required</small>
+			<input type="text" name="clusterName" formControlName="clusterName" required>
+			<!--input type="text" name="clusterName" required class="form-control is-invalid" [class.is-invalid]="name.invalid && name.touched"-->
+			<!--small class="text-danger" [class.d-none]="name.valid || name.untouched">Name is required</small-->
 		</div>
 
-		<div formGroupName="Server Details">
-
+		<div formGroupName="serverDetails">
+			<h2>Server Details:</h2>
 			<div class="form-group">
 				<label>Server Make:</label>
-				<select name="serverMake" [(ngModel)]="clusterModel.serverMake">
+				<select name="serverMake" formControlName="serverMake">
 					<option *ngFor="let serverMake of serverMakeOptions">{{ serverMake }}</option>
 				</select>
 			</div>
 
 			<div class="form-group">
 				<label>Server Model:</label>
-				<input type="text" name="serverModelName" required class="form-control is-invalid" #name=ngModel [class.is-invalid]="name.invalid && name.touched" [(ngModel)]="clusterModel.serverModel">
-				<small class="text-danger" [class.d-none]="name.valid || name.untouched">Name is required</small>
+				<input type="text" name="serverModel" formControlName="serverModel" required>
+				<!--input type="text" name="serverModelName" required class="form-control is-invalid" [class.is-invalid]="name.invalid && name.touched"-->
+				<!--small class="text-danger" [class.d-none]="name.valid || name.untouched">Name is required</small-->
 			</div>
 
 			<div class="form-group">
 				<label>Server NIC:</label>
-				<select name="serverNic" [(ngModel)]="clusterModel.serverNic">
+				<select name="serverNic" formControlName="serverNic">
 					<option *ngFor="let serverNic of serverNicOptions">{{ serverNic }}</option>
 				</select>
 			</div>
@@ -45,26 +47,26 @@
 
 		<div class="form-group">
 			<label>Number of Servers</label>
-			<input type="number" name="numberOfServers" min="1" max="12" required class="form-control is-invalid" #numberOfServers=ngModel [class.is-invalid]="numberOfServers.invalid && numberOfServers.touched" [(ngModel)]="clusterModel.numberOfServers">
-			<small class="text-danger" [class.d-none]="numberOfServers.valid || numberOfServers.untouched">1 to 12 servers supported</small>
+			<input type="number" name="numberOfServers" formControlName="numberOfServers" min="1" max="12" required>
+			<!--input type="number" name="numberOfServers" min="1" max="12" required class="form-control is-invalid" [class.is-invalid]="numberOfServers.invalid && numberOfServers.touched"-->
+			<!--small class="text-danger" [class.d-none]="numberOfServers.valid || numberOfServers.untouched">1 to 12 servers supported</small-->
 		</div>
 
-		<div class="mb-3" *ngIf="userForm.value.numberOfServers > 1; else configNotNeeded">
+		<div class="mb-3" *ngIf="clusterForm.value.numberOfServers > 1">
 			<label>Configuration</label>
 			<div class="form-check" *ngFor="let type of configTypes">
-				<input class="form-check-input" name="configType" type="radio" value="{{ type }}" [(ngModel)]="clusterModel.config">
+				<input class="form-check-input" name="configType" formControlName="configType" type="radio" value="{{ type }}">
 				<label class="form-check-label">{{ type }}</label>
 			</div>
 		</div>
-
-		<ng-template #configNotNeeded>
-		<div>
+		<div *ngIf="clusterForm.value.numberOfServers === 1">
 			<label>Configuration</label><br>
 			<label>Standard with Single Server</label>
 		</div>
-		</ng-template>
 
-		<button class="btn btn-primary" type="submit" [disabled]="userForm.form.invalid">Configure</button>
+		<button class="btn btn-primary" type="submit">Configure</button>
+
+		<button class="btn btn-secondary" type="button" (click)="applyRecommendedConfig()">Recommended Configuration</button>
 
 	</form>
 
@@ -72,7 +74,7 @@
 
 	<h4>Value Collected from the Form:</h4>
 	<div>
-		{{ userForm.value | json }}
+		{{ clusterForm.value | json }}
 	</div>
 	<h4>Value Bound to Model:</h4>
 	<div>

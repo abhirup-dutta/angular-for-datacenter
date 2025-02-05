@@ -22,11 +22,11 @@ class Server(BaseHTTPRequestHandler):
         print(json_data);
         no_of_servers = json_data['numberOfServers']
         print('No of servers: %d' % no_of_servers)
-        if no_of_servers < 6:
+        if no_of_servers <= 6:
             print('true')
         else:
             print('false')
-        return no_of_servers < 6
+        return no_of_servers <= 6
 
         
     def do_HEAD(self):

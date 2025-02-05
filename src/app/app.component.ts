@@ -15,10 +15,11 @@ import { ImagingService } from './imaging.service';
 })
 export class AppComponent {
   title = 'tdf';
-  serverModels = ['HP' , 'Cisco', 'Dell'];
+  serverMakeOptions = ['HP' , 'Cisco', 'Dell'];
+  serverNicOptions = ['Mellanox' , 'Chelsio', 'NVIDIA'];
   configTypes = ['Standard' , 'High-Availability'];
 
-  clusterModel = new Cluster('cluster-1', 'HP', 2, 'Standard');
+  clusterModel = new Cluster('cluster-1', 'HP', '1110', 'Mellanox', 2, 'Standard');
   errorMsg = '';
 
   constructor(private _imagingService: ImagingService) {}

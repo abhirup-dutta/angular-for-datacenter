@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Cluster } from './cluster';
 import { ImagingService } from './imaging.service';
 
@@ -26,13 +26,13 @@ export class AppComponent {
 
   private _formBuilder = inject(FormBuilder);
   clusterForm = this._formBuilder.group({
-    clusterName: [''],
+    clusterName: ['', Validators.required],
     serverDetails: this._formBuilder.group({
-      serverMake: [''],
-      serverModel: [''],
-      serverNic: ['']
+      serverMake: ['HP'],
+      serverModel: ['', Validators.required],
+      serverNic: ['Mellanox']
     }),
-    numberOfServers: [1],
+    numberOfServers: [1, Validators.required],
     configType: ['Standard']
   });
 

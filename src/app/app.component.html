@@ -15,30 +15,43 @@
 
 		<div class="form-group">
 			<label>Cluster Name</label>
-			<input type="text" name="clusterName" formControlName="clusterName" required>
-			<!--input type="text" name="clusterName" required class="form-control is-invalid" [class.is-invalid]="name.invalid && name.touched"-->
-			<!--small class="text-danger" [class.d-none]="name.valid || name.untouched">Name is required</small-->
+			<input type="text" name="clusterName" formControlName="clusterName"
+				required class="form-control is-invalid"
+				[class.is-invalid]="this.clusterForm!.get('clusterName')!.invalid &&
+				this.clusterForm!.get('clusterName')!.touched">
+			<small class="text-danger" [class.d-none]="this.clusterForm!.get('clusterName')!.valid ||
+				this.clusterForm!.get('clusterName')!.untouched">
+				Name is required
+			</small>
 		</div>
 
 		<div formGroupName="serverDetails">
 			<h2>Server Details:</h2>
 			<div class="form-group">
 				<label>Server Make:</label>
-				<select name="serverMake" formControlName="serverMake">
-					<option *ngFor="let serverMake of serverMakeOptions">{{ serverMake }}</option>
+				<select name="serverMake" formControlName="serverMake" class="form-control">
+					<option *ngFor="let serverMake of serverMakeOptions">
+						{{ serverMake }}
+					</option>
 				</select>
 			</div>
 
 			<div class="form-group">
 				<label>Server Model:</label>
-				<input type="text" name="serverModel" formControlName="serverModel" required>
-				<!--input type="text" name="serverModelName" required class="form-control is-invalid" [class.is-invalid]="name.invalid && name.touched"-->
-				<!--small class="text-danger" [class.d-none]="name.valid || name.untouched">Name is required</small-->
+				<input type="text" name="serverModel" formControlName="serverModel"
+					required class="form-control is-invalid"
+					[class.is-invalid]="this.clusterForm!.get('serverDetails')!.get('serverModel')!.invalid &&
+					this.clusterForm!.get('serverDetails')!.get('serverModel')!.touched">
+				<small class="text-danger"
+					[class.d-none]="this.clusterForm!.get('serverDetails')!.get('serverModel')!.valid ||
+					this.clusterForm!.get('serverDetails')!.get('serverModel')!.untouched">
+					Model Name/Number is required
+			</small>
 			</div>
 
 			<div class="form-group">
 				<label>Server NIC:</label>
-				<select name="serverNic" formControlName="serverNic">
+				<select name="serverNic" formControlName="serverNic" class="form-control">
 					<option *ngFor="let serverNic of serverNicOptions">{{ serverNic }}</option>
 				</select>
 			</div>
@@ -47,9 +60,15 @@
 
 		<div class="form-group">
 			<label>Number of Servers</label>
-			<input type="number" name="numberOfServers" formControlName="numberOfServers" min="1" max="12" required>
-			<!--input type="number" name="numberOfServers" min="1" max="12" required class="form-control is-invalid" [class.is-invalid]="numberOfServers.invalid && numberOfServers.touched"-->
-			<!--small class="text-danger" [class.d-none]="numberOfServers.valid || numberOfServers.untouched">1 to 12 servers supported</small-->
+			<input type="number" name="numberOfServers" min="1" max="12"
+				required formControlName="numberOfServers" class="form-control is-invalid"
+				[class.is-invalid]="this.clusterForm!.get('numberOfServers')!.invalid &&
+				this.clusterForm!.get('numberOfServers')!.touched">
+			<small class="text-danger"
+				[class.d-none]="this.clusterForm!.get('numberOfServers')!.valid ||
+				this.clusterForm!.get('numberOfServers')!.untouched">
+				1 to 12 servers supported
+			</small>
 		</div>
 
 		<div class="mb-3" *ngIf="clusterForm!.value!.numberOfServers! > 1">

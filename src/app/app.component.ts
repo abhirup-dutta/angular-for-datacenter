@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, FormArray, NgForm, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Cluster } from './cluster';
 import { ImagingService } from './imaging.service';
 
@@ -23,18 +23,21 @@ export class AppComponent {
   clusterModel = new Cluster();
   errorMsg = '';
 
-  clusterForm = new FormGroup({
-    clusterName: new FormControl(),
-    serverDetails: new FormGroup({
-      serverMake: new FormControl(),
-      serverModel: new FormControl(),
-      serverNic: new FormControl()
+
+  private _formBuilder = inject(FormBuilder);
+  clusterForm = this._formBuilder.group({
+    clusterName: [''],
+    serverDetails: this._formBuilder.group({
+      serverMake: [''],
+      serverModel: [''],
+      serverNic: ['']
     }),
-    numberOfServers: new FormControl(),
-    configType: new FormControl()
+    numberOfServers: [1],
+    configType: ['Standard']
   });
 
   constructor(private _imagingService: ImagingService) {}
+
 
   onSubmit() {
     console.log("Form Data Received:");
@@ -43,22 +46,22 @@ export class AppComponent {
     /*
      *  Transfer values from Form to Model
      */
-    this.clusterModel.name = this.clusterForm.get('clusterName')!.value;
+    this.clusterModel.name = this.clusterForm.get('clusterName')!.value!;
     this.clusterModel.serverMake = this.clusterForm
       .get('serverDetails')!
-      .get('serverMake')!.value;
+      .get('serverMake')!.value!;
     this.clusterModel.serverModel = this.clusterForm
       .get('serverDetails')!
-      .get('serverModel')!.value;
+      .get('serverModel')!.value!;
     this.clusterModel.serverNic = this.clusterForm
       .get('serverDetails')!
-      .get('serverNic')!.value;
-    this.clusterModel.numberOfServers = this.clusterForm.get('numberOfServers')!.value;
+      .get('serverNic')!.value!;
+    this.clusterModel.numberOfServers = this.clusterForm.get('numberOfServers')!.value!;
     console.log("Cluster Configuration Initiated:");
     if (this.clusterModel.numberOfServers === 1) {
       this.clusterModel.config = 'Standard';
     } else {
-      this.clusterModel.config = this.clusterForm.get('configType')!.value;
+      this.clusterModel.config = this.clusterForm.get('configType')!.value!;
     }
     console.log(this.clusterModel);
 

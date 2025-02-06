@@ -52,7 +52,7 @@
 			<!--small class="text-danger" [class.d-none]="numberOfServers.valid || numberOfServers.untouched">1 to 12 servers supported</small-->
 		</div>
 
-		<div class="mb-3" *ngIf="clusterForm.value.numberOfServers > 1">
+		<div class="mb-3" *ngIf="clusterForm!.value!.numberOfServers! > 1">
 			<label>Configuration</label>
 			<div class="form-check" *ngFor="let type of configTypes">
 				<input class="form-check-input" name="configType" formControlName="configType" type="radio" value="{{ type }}">

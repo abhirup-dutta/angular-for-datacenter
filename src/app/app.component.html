@@ -1,21 +1,14 @@
 <div class="container-fluid">
 
-	<h1>Cluster Configuration Details</h1>
-	<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
-	  <div class="alert-items">
-	    <div class="alert-item static">
-	      <span class="alert-text">
-	      	{{ errorMsg }}
-	      </span>
-	  	</div>
-	  </div>
-	</div>
+	<h3>Cluster Configuration Details</h3>
 
 	<form clrForm clrLayout="horizontal" [formGroup]="clusterForm" novalidate (ngSubmit)="onSubmit()">
 
+		<br><br>
+
 		<div class="form-group">
-			<label>Cluster Name</label>
-			<input type="text" name="clusterName" formControlName="clusterName"
+			<h4>Cluster Name</h4>
+			<input clrInput type="text" name="clusterName" formControlName="clusterName"
 				required class="form-control is-invalid"
 				[class.is-invalid]="this.clusterForm!.get('clusterName')!.invalid &&
 				this.clusterForm!.get('clusterName')!.touched">
@@ -25,20 +18,27 @@
 			</small>
 		</div>
 
+		<br><br>
+
 		<div formGroupName="serverDetails">
-			<h2>Server Details:</h2>
+			<h4>Server Details</h4>
+			
+			<br>
+			
 			<div class="form-group">
-				<label>Server Make:</label>
-				<select name="serverMake" formControlName="serverMake" class="form-control">
+				<label class="clr-control-label">Server Make</label>
+				<select clrSelect name="serverMake" formControlName="serverMake" class="form-control">
 					<option *ngFor="let serverMake of serverMakeOptions">
 						{{ serverMake }}
 					</option>
 				</select>
 			</div>
 
+			<br>
+
 			<div class="form-group">
-				<label>Server Model:</label>
-				<input type="text" name="serverModel" formControlName="serverModel"
+				<label class="clr-control-label">Server Model</label>
+				<input clrInput type="text" name="serverModel" formControlName="serverModel"
 					required class="form-control is-invalid"
 					[class.is-invalid]="this.clusterForm!.get('serverDetails')!.get('serverModel')!.invalid &&
 					this.clusterForm!.get('serverDetails')!.get('serverModel')!.touched">
@@ -49,18 +49,22 @@
 			</small>
 			</div>
 
+			<br>
+
 			<div class="form-group">
-				<label>Server NIC:</label>
-				<select name="serverNic" formControlName="serverNic" class="form-control">
+				<label class="clr-control-label">Server NIC</label>
+				<select clrSelect name="serverNic" formControlName="serverNic" class="form-control">
 					<option *ngFor="let serverNic of serverNicOptions">{{ serverNic }}</option>
 				</select>
 			</div>
 
 		</div>
 
+		<br><br>
+
 		<div class="form-group">
-			<label>Number of Servers</label>
-			<input type="number" name="numberOfServers" min="1" max="12"
+			<h4>Number of Servers</h4>
+			<input clrInput type="number" name="numberOfServers" min="1" max="12"
 				required formControlName="numberOfServers" class="form-control is-invalid"
 				[class.is-invalid]="this.clusterForm!.get('numberOfServers')!.invalid &&
 				this.clusterForm!.get('numberOfServers')!.touched">
@@ -71,15 +75,16 @@
 			</small>
 		</div>
 
+		<br><br>
+
+		<h4>Configuration</h4>
 		<div class="mb-3" *ngIf="clusterForm!.value!.numberOfServers! > 1">
-			<label>Configuration</label>
 			<div class="form-check" *ngFor="let type of configTypes">
-				<input class="form-check-input" name="configType" formControlName="configType" type="radio" value="{{ type }}">
+				<input clrInput class="form-check-input" name="configType" formControlName="configType" type="radio" value="{{ type }}">
 				<label class="form-check-label">{{ type }}</label>
 			</div>
 		</div>
-		<div *ngIf="clusterForm.value.numberOfServers === 1">
-			<label>Configuration</label><br>
+		<div class="mb-3" *ngIf="clusterForm.value.numberOfServers === 1">
 			<label>Standard with Single Server</label>
 		</div>
 
@@ -89,15 +94,33 @@
 
 	</form>
 
+	<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
+		<div class="alert-items">
+		  <div class="alert-item static">
+			<span class="alert-text">
+				{{ errorMsg }}
+			</span>
+			</div>
+		</div>
+	  </div>
+
 	<hr>
 
-	<h4>Value Collected from the Form:</h4>
+	<h4>Value Collected from the Form</h4>
 	<div>
 		{{ clusterForm.value | json }}
 	</div>
-	<h4>Value Bound to Model:</h4>
+	<h4>Value Bound to Model to be Sent</h4>
 	<div>
 		{{ clusterModel | json }}
+	</div>
+	<h4>Received Data from the Backend Server</h4>
+	<div>
+		{{ receivedData| json }}
+	</div>
+	<h4>Received Errors from the Backend Server</h4>
+	<div>
+		{{ errorMsg }}
 	</div>
 
 </div>

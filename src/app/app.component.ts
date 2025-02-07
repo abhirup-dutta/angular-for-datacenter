@@ -20,6 +20,7 @@ export class AppComponent {
   configTypes = ['Standard' , 'High-Availability'];
 
   clusterModel = new Cluster();
+  receivedData = '';
   errorMsg = '';
 
   private _formBuilder = inject(FormBuilder);
@@ -71,15 +72,19 @@ export class AppComponent {
       .subscribe(
         data => {
             console.log('Success!', data);
+            this.receivedData = data;
             this.errorMsg = '';
           },
-        error => this.errorMsg = error.statusText
+        error => {
+            this.errorMsg = error.statusText;
+            this.receivedData = '';
+          }
         );
   }
 
   applyRecommendedConfig() {
     this.clusterForm.patchValue({
-      numberOfServers: 6,
+      numberOfServers: 2,
       configType: 'High-Availability'
     });
   }

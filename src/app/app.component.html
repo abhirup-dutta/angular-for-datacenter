@@ -2,10 +2,12 @@
 
 	<h3>Cluster Configuration Details</h3>
 
+	<!--Using Clarity Design, but bare-minimum so as to not interfere with SSR-->
 	<form clrForm clrLayout="horizontal" [formGroup]="clusterForm" novalidate (ngSubmit)="onSubmit()">
 
 		<br><br>
 
+		<!--Cluster Name: Input Text-->
 		<div class="form-group">
 			<h4>Cluster Name</h4>
 			<input clrInput type="text" name="clusterName" formControlName="clusterName"
@@ -24,11 +26,13 @@
 
 		<br><br>
 
+		<!--Server Details: Section-->
 		<div formGroupName="serverDetails">
 			<h4>Server Details</h4>
 			
 			<br>
 			
+			<!--Server Make: Drop Down Menu-->
 			<div class="form-group">
 				<label class="clr-control-label">Server Make</label>
 				<select clrSelect name="serverMake" formControlName="serverMake" class="form-control">
@@ -40,6 +44,7 @@
 
 			<br>
 
+			<!--Server Model: Input Text-->
 			<div class="form-group">
 				<label class="clr-control-label">Server Model</label>
 				<input clrInput type="text" name="serverModel" formControlName="serverModel"
@@ -55,6 +60,7 @@
 
 			<br>
 
+			<!--Server NIC: Drop Down Menu-->
 			<div class="form-group">
 				<label class="clr-control-label">Server NIC</label>
 				<select clrSelect name="serverNic" formControlName="serverNic" class="form-control">
@@ -66,6 +72,7 @@
 
 		<br><br>
 
+		<!--Number of Servers: Number-->
 		<div class="form-group">
 			<h4>Number of Servers</h4>
 			<input clrInput type="number" name="numberOfServers" min="1" max="12"
@@ -81,6 +88,7 @@
 
 		<br><br>
 
+		<!--Configuration Type: Radio Button List-->
 		<h4>Configuration Type</h4>
 		<div class="mb-3" *ngIf="numberOfServers?.value! > 1">
 			<div class="form-check" *ngFor="let type of configTypes">
@@ -98,6 +106,7 @@
 
 	</form>
 
+	<!--Backend Error: Red Alert-->
 	<div class="alert alert-danger" role="alert" *ngIf="errorMsg">
 		<div class="alert-items">
 		  <div class="alert-item static">
@@ -108,6 +117,7 @@
 	</div>
 	</div>
 
+	<!--Backend Success: Green Alert-->
 	<div class="alert alert-success" role="alert" *ngIf="submitted && !errorMsg">
 		<div class="alert-items">
 		  <div class="alert-item static">
@@ -120,6 +130,7 @@
 
 	<hr>
 
+	<!--Values Printed For Easy Verification-->
 	<h4>Value Collected from the Form</h4>
 	<div>
 		{{ clusterForm.value | json }}

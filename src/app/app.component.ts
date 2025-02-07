@@ -18,13 +18,15 @@ export class AppComponent {
   serverMakeOptions = ['HP' , 'Cisco', 'Dell'];
   serverNicOptions = ['Mellanox' , 'Chelsio', 'NVIDIA'];
   configTypes = ['Standard' , 'High-Availability'];
-
   clusterModel = new Cluster();
   receivedData = '';
   errorMsg = '';
   successMsg = 'Verified and started cluster configuration.'
   submitted = false;
 
+  /*
+   * Form Builder - creates the initial form with validations
+   */
   private _formBuilder = inject(FormBuilder);
   clusterForm = this._formBuilder.group({
     clusterName: ['Cluster-1.1', [Validators.required, Validators.minLength(3)]],
@@ -37,27 +39,48 @@ export class AppComponent {
     configType: ['Standard']
   });
 
+  /*
+   * Getter methods for code ease in html
+   */
   get clusterName() {
     return this.clusterForm?.get('clusterName');
   }
-
   get serverModel() {
     return this.clusterForm?.get('serverDetails')?.get('serverModel');
   }
-
   get numberOfServers() {
     return this.clusterForm?.get('numberOfServers');
   }
 
   constructor(private _imagingService: ImagingService) {}
 
+  /*
+   * applyRecommendedConfig()
+   * This goes in reverse direction and
+   * fills form data from code.
+   * This is the recommended configuration of
+   * number of servers and configuration type
+   */
+  applyRecommendedConfig() {
+    this.clusterForm.patchValue({
+      numberOfServers: 2,
+      configType: 'High-Availability'
+    });
+  }
 
+  /*
+   * onSubmit()
+   * Method for when the form is submitted via 'Configure Cluster' Button
+   * We first do form manipulation,
+   * Then we pull it into Model data,
+   * Then we pass the Model data to the Backend using Imaging Service
+   */
   onSubmit() {
     console.log("Form Data Received:");
     console.log(this.clusterForm.value);
 
     /*
-     *  Transfer values from Form to Model
+     * Transfer values from Form to Model
      */
     this.clusterModel.name = this.clusterForm.get('clusterName')!.value!;
     this.clusterModel.serverMake = this.clusterForm
@@ -79,7 +102,7 @@ export class AppComponent {
     console.log(this.clusterModel);
 
     /*
-     *  Transfer values from Model to Backend
+     * Transfer values from Model to Backend
      */
     console.log('Sending data to imaging server ...');
     this._imagingService.startImaging(this.clusterModel)
@@ -94,14 +117,11 @@ export class AppComponent {
             this.receivedData = '';
           }
         );
-    
-    this.submitted = true;
-  }
 
-  applyRecommendedConfig() {
-    this.clusterForm.patchValue({
-      numberOfServers: 2,
-      configType: 'High-Availability'
-    });
+    /*
+     * Mark submitted
+     * Used as a check for alert-success message from Backend
+     */
+    this.submitted = true;
   }
 }

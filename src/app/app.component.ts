@@ -22,10 +22,12 @@ export class AppComponent {
   clusterModel = new Cluster();
   receivedData = '';
   errorMsg = '';
+  successMsg = 'Verified and started cluster configuration.'
+  submitted = false;
 
   private _formBuilder = inject(FormBuilder);
   clusterForm = this._formBuilder.group({
-    clusterName: ['Cluster-1.1', Validators.required],
+    clusterName: ['Cluster-1.1', [Validators.required, Validators.minLength(3)]],
     serverDetails: this._formBuilder.group({
       serverMake: ['HP'],
       serverModel: ['All Models', Validators.required],
@@ -34,6 +36,18 @@ export class AppComponent {
     numberOfServers: [1, Validators.required],
     configType: ['Standard']
   });
+
+  get clusterName() {
+    return this.clusterForm?.get('clusterName');
+  }
+
+  get serverModel() {
+    return this.clusterForm?.get('serverDetails')?.get('serverModel');
+  }
+
+  get numberOfServers() {
+    return this.clusterForm?.get('numberOfServers');
+  }
 
   constructor(private _imagingService: ImagingService) {}
 
@@ -80,6 +94,8 @@ export class AppComponent {
             this.receivedData = '';
           }
         );
+    
+    this.submitted = true;
   }
 
   applyRecommendedConfig() {

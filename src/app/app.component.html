@@ -10,12 +10,16 @@
 			<h4>Cluster Name</h4>
 			<input clrInput type="text" name="clusterName" formControlName="clusterName"
 				required class="form-control is-invalid"
-				[class.is-invalid]="this.clusterForm!.get('clusterName')!.invalid &&
-				this.clusterForm!.get('clusterName')!.touched">
-			<small class="text-danger" [class.d-none]="this.clusterForm!.get('clusterName')!.valid ||
-				this.clusterForm!.get('clusterName')!.untouched">
-				Name is required
-			</small>
+				[class.is-invalid]="clusterName?.invalid &&
+				clusterName?.touched">
+			<div *ngIf="clusterName?.invalid && clusterName?.touched">
+				<small *ngIf="clusterName?.errors!['required']" class="text-danger">
+					Name is required.
+				</small>
+				<small *ngIf="clusterName?.errors!['minlength']" class="text-danger">
+					Name has to be at least 3 characters long.
+				</small>
+			</div>
 		</div>
 
 		<br><br>
@@ -40,12 +44,12 @@
 				<label class="clr-control-label">Server Model</label>
 				<input clrInput type="text" name="serverModel" formControlName="serverModel"
 					required class="form-control is-invalid"
-					[class.is-invalid]="this.clusterForm!.get('serverDetails')!.get('serverModel')!.invalid &&
-					this.clusterForm!.get('serverDetails')!.get('serverModel')!.touched">
+					[class.is-invalid]="serverModel?.invalid &&
+					serverModel?.touched">
 				<small class="text-danger"
-					[class.d-none]="this.clusterForm!.get('serverDetails')!.get('serverModel')!.valid ||
-					this.clusterForm!.get('serverDetails')!.get('serverModel')!.untouched">
-					Model Name/Number is required
+					[class.d-none]="serverModel?.valid ||
+					serverModel?.untouched">
+					Model Name/Number is required.
 			</small>
 			</div>
 
@@ -66,29 +70,29 @@
 			<h4>Number of Servers</h4>
 			<input clrInput type="number" name="numberOfServers" min="1" max="12"
 				required formControlName="numberOfServers" class="form-control is-invalid"
-				[class.is-invalid]="this.clusterForm!.get('numberOfServers')!.invalid &&
-				this.clusterForm!.get('numberOfServers')!.touched">
+				[class.is-invalid]="numberOfServers?.invalid &&
+				numberOfServers?.touched">
 			<small class="text-danger"
-				[class.d-none]="this.clusterForm!.get('numberOfServers')!.valid ||
-				this.clusterForm!.get('numberOfServers')!.untouched">
-				1 to 12 servers supported
+				[class.d-none]="numberOfServers?.valid ||
+				numberOfServers?.untouched">
+				1 to 12 servers supported.
 			</small>
 		</div>
 
 		<br><br>
 
-		<h4>Configuration</h4>
-		<div class="mb-3" *ngIf="clusterForm!.value!.numberOfServers! > 1">
+		<h4>Configuration Type</h4>
+		<div class="mb-3" *ngIf="numberOfServers?.value! > 1">
 			<div class="form-check" *ngFor="let type of configTypes">
 				<input clrInput class="form-check-input" name="configType" formControlName="configType" type="radio" value="{{ type }}">
 				<label class="form-check-label">{{ type }}</label>
 			</div>
 		</div>
-		<div class="mb-3" *ngIf="clusterForm.value.numberOfServers === 1">
+		<div class="mb-3" *ngIf="numberOfServers?.value! === 1">
 			<label>Standard with Single Server</label>
 		</div>
 
-		<button class="btn btn-primary" type="submit">Configure</button>
+		<button class="btn btn-primary" type="submit">Configure Cluster</button>
 
 		<button class="btn btn-secondary" type="button" (click)="applyRecommendedConfig()">Recommended Configuration</button>
 
@@ -100,9 +104,19 @@
 			<span class="alert-text">
 				{{ errorMsg }}
 			</span>
-			</div>
 		</div>
-	  </div>
+	</div>
+	</div>
+
+	<div class="alert alert-success" role="alert" *ngIf="submitted && !errorMsg">
+		<div class="alert-items">
+		  <div class="alert-item static">
+			<span class="alert-text">
+				{{ successMsg }}
+			</span>
+		</div>
+	</div>
+	</div>
 
 	<hr>
 
@@ -116,7 +130,7 @@
 	</div>
 	<h4>Received Data from the Backend Server</h4>
 	<div>
-		{{ receivedData| json }}
+		{{ receivedData | json }}
 	</div>
 	<h4>Received Errors from the Backend Server</h4>
 	<div>

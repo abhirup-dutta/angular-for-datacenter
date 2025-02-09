@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Cluster } from './cluster';
 import { ImagingService } from './imaging.service';
+import { ServerModelValidator } from './shared/serverModel.validator';
 
 @Component({
   selector: 'app-root',
@@ -32,12 +33,12 @@ export class AppComponent {
     clusterName: ['Cluster-1.1', [Validators.required, Validators.minLength(3)]],
     serverDetails: this._formBuilder.group({
       serverMake: ['HP'],
-      serverModel: ['All Models', Validators.required],
+      serverModel: ['HPE ProLiant ML30 Gen11', Validators.required],
       serverNic: ['Mellanox']
     }),
     numberOfServers: [1, Validators.required],
     configType: ['Standard']
-  });
+  }, { validator : ServerModelValidator });
 
   /*
    * Getter methods for code ease in html

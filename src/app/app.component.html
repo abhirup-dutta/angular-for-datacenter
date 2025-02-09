@@ -50,12 +50,17 @@
 				<input clrInput type="text" name="serverModel" formControlName="serverModel"
 					required class="form-control is-invalid"
 					[class.is-invalid]="serverModel?.invalid &&
-					serverModel?.touched">
+					serverModel?.touched &&
+					clusterForm.errors && clusterForm.errors['misMatch']">
 				<small class="text-danger"
 					[class.d-none]="serverModel?.valid ||
 					serverModel?.untouched">
 					Model Name/Number is required.
-			</small>
+				</small>
+				<small class="text-danger"
+					*ngIf="clusterForm.errors && clusterForm.errors['misMatch']">
+					Model names must start with HPE, UCS and PowerEdge for makes HP, Cisco and Dell respectively.
+				</small>
 			</div>
 
 			<br>
@@ -131,6 +136,10 @@
 	<hr>
 
 	<!--Values Printed For Easy Verification-->
+	<h4>Form Errors</h4>
+	<div *ngIf="clusterForm.errors">
+		{{ clusterForm.errors | json }}
+	</div>
 	<h4>Value Collected from the Form</h4>
 	<div>
 		{{ clusterForm.value | json }}

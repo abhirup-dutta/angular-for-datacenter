@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Cluster } from './cluster';
@@ -14,7 +14,7 @@ import { ServerModelValidator } from './shared/serverModel.validator';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'tdf';
   serverMakeOptions = ['HP' , 'Cisco', 'Dell'];
   serverNicOptions = ['Mellanox' , 'Chelsio', 'NVIDIA'];
@@ -26,19 +26,11 @@ export class AppComponent {
   submitted = false;
 
   /*
-   * Form Builder - creates the initial form with validations
+   * Form Group and Controls
+   * To be initialized properly in ngOnInit()
    */
+  clusterForm: FormGroup = new FormGroup({});
   private _formBuilder = inject(FormBuilder);
-  clusterForm = this._formBuilder.group({
-    clusterName: ['Cluster-1.1', [Validators.required, Validators.minLength(3)]],
-    serverDetails: this._formBuilder.group({
-      serverMake: ['HP'],
-      serverModel: ['HPE ProLiant ML30 Gen11', Validators.required],
-      serverNic: ['Mellanox']
-    }),
-    numberOfServers: [1, Validators.required],
-    configType: ['Standard']
-  }, { validator : ServerModelValidator });
 
   /*
    * Getter methods for code ease in html
@@ -49,11 +41,51 @@ export class AppComponent {
   get serverModel() {
     return this.clusterForm?.get('serverDetails')?.get('serverModel');
   }
+  get allServerModels() {
+    return this.clusterForm?.get('serverDetails')?.get('allServerModels');
+  }
   get numberOfServers() {
     return this.clusterForm?.get('numberOfServers');
   }
 
   constructor(private _imagingService: ImagingService) {}
+
+  ngOnInit(): void {
+    /*
+    * Form Builder - creates the initial form with validations
+    */
+    this.clusterForm = this._formBuilder.group({
+      clusterName: ['Cluster-1.1', [Validators.required, Validators.minLength(3)]],
+      serverDetails: this._formBuilder.group({
+        serverMake: ['HP'],
+        serverModel: ['HPE ProLiant ML30 Gen11', Validators.required],
+        allServerModels: [false],
+        serverNic: ['Mellanox']
+      }),
+      numberOfServers: [1, Validators.required],
+      configType: ['Standard']
+    }, { validator : ServerModelValidator });
+
+    /*
+     * Subscribe to value changes of Allow All Server Models checkbox
+     * and accordingly change the validation requirements
+     * of Server Model input textbox
+     */
+    this.clusterForm.get('serverDetails')?.get('allServerModels')?.valueChanges
+      .subscribe(checkedValue => {
+        const serverModelControl = this.clusterForm.get('serverDetails')?.get('serverModel');
+        if (checkedValue) {
+          serverModelControl?.clearValidators();
+          this.clusterForm.clearValidators();
+          serverModelControl?.setValue('All Models');
+        } else {
+          serverModelControl?.setValidators([Validators.required]);
+          this.clusterForm.addValidators(ServerModelValidator);
+        }
+        serverModelControl?.updateValueAndValidity();
+        this.clusterForm.updateValueAndValidity();
+      });
+  }
 
   /*
    * applyRecommendedConfig()
@@ -87,9 +119,16 @@ export class AppComponent {
     this.clusterModel.serverMake = this.clusterForm
       .get('serverDetails')!
       .get('serverMake')!.value!;
-    this.clusterModel.serverModel = this.clusterForm
-      .get('serverDetails')!
-      .get('serverModel')!.value!;
+    var allServerModels = this.clusterForm
+    .get('serverDetails')!
+    .get('allServerModels')!.value!;
+    if (allServerModels === true) {
+      this.clusterModel.serverModel = "";
+    } else {
+      this.clusterModel.serverModel = this.clusterForm
+        .get('serverDetails')!
+        .get('serverModel')!.value!;
+    }
     this.clusterModel.serverNic = this.clusterForm
       .get('serverDetails')!
       .get('serverNic')!.value!;

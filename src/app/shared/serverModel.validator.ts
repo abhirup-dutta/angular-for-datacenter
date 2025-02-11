@@ -41,10 +41,10 @@ export function ServerModelValidator(control: AbstractControl): { [key: string] 
         }
     }
 
-    /* Return misMatch value */
+    /* Return serverModelMismatch value */
     if(isRegexMatch === true) {
         return null;
     } else {
-        return { 'misMatch': true };
+        return { 'serverModelMismatch': true };
     }
 }

@@ -51,16 +51,26 @@
 					required class="form-control is-invalid"
 					[class.is-invalid]="serverModel?.invalid &&
 					serverModel?.touched &&
-					clusterForm.errors && clusterForm.errors['misMatch']">
+					clusterForm.errors && clusterForm.errors['serverModelMismatch']">
 				<small class="text-danger"
 					[class.d-none]="serverModel?.valid ||
 					serverModel?.untouched">
 					Model Name/Number is required.
 				</small>
 				<small class="text-danger"
-					*ngIf="clusterForm.errors && clusterForm.errors['misMatch']">
+					*ngIf="clusterForm.errors && clusterForm.errors['serverModelMismatch']">
 					Model names must start with HPE, UCS and PowerEdge for makes HP, Cisco and Dell respectively.
 				</small>
+			</div>
+
+			<br>
+
+			<!--All Server Models: Check Box-->
+			<div class="form-group">
+				<div class="form-check">
+					<input clrCheckbox class="form-check-input" name="allServerModels" formControlName="allServerModels" type="checkbox" value="false">
+					<label class="form-check-label">Allow All Server Models</label>
+				</div>
 			</div>
 
 			<br>
@@ -95,7 +105,7 @@
 
 		<!--Configuration Type: Radio Button List-->
 		<h4>Configuration Type</h4>
-		<div class="mb-3" *ngIf="numberOfServers?.value! > 1">
+		<div class="form-group" *ngIf="numberOfServers?.value! > 1">
 			<div class="form-check" *ngFor="let type of configTypes">
 				<input clrInput class="form-check-input" name="configType" formControlName="configType" type="radio" value="{{ type }}">
 				<label class="form-check-label">{{ type }}</label>
@@ -105,7 +115,7 @@
 			<label>Standard with Single Server</label>
 		</div>
 
-		<button class="btn btn-primary" type="submit">Configure Cluster</button>
+		<button class="btn btn-primary" type="submit" [disabled]="clusterForm.invalid">Configure Cluster</button>
 
 		<button class="btn btn-secondary" type="button" (click)="applyRecommendedConfig()">Recommended Configuration</button>
 

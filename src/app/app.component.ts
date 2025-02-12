@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } fr
 import { Cluster } from './shared/cluster';
 import { ImagingService } from './shared/imaging.service';
 import { ServerModelValidator } from './shared/serverModel.validator';
+import { touch } from '@cds/core/internal';
 
 @Component({
   selector: 'app-root',
@@ -16,8 +17,10 @@ import { ServerModelValidator } from './shared/serverModel.validator';
 })
 export class AppComponent implements OnInit {
   title = 'tdf';
+  clusterNameDefault = 'Cluster-1.1';
   serverMakeOptions = ['HP' , 'Cisco', 'Dell'];
   serverMakeDefault = this.serverMakeOptions[0];
+  serverModelDefault = 'HPE ProLiant ML30 Gen11';
   serverNicOptions = ['Mellanox' , 'Chelsio', 'NVIDIA'];
   serverNicDefault = this.serverNicOptions[0];
   serverNicMinCount = 1;
@@ -43,6 +46,9 @@ export class AppComponent implements OnInit {
   get clusterName() {
     return this.clusterForm?.get('clusterName');
   }
+  get serverMake() {
+    return this.clusterForm?.get('serverDetails')?.get('serverMake');
+  }
   get serverModel() {
     return this.clusterForm?.get('serverDetails')?.get('serverModel');
   }
@@ -63,10 +69,11 @@ export class AppComponent implements OnInit {
     * Form Builder - creates the initial form with validations
     */
     this.clusterForm = this._formBuilder.group({
-      clusterName: ['Cluster-1.1', [Validators.required, Validators.minLength(3)]],
+      clusterName: [this.clusterNameDefault,
+        [Validators.required, Validators.minLength(3)]],
       serverDetails: this._formBuilder.group({
         serverMake: [this.serverMakeDefault],
-        serverModel: ['HPE ProLiant ML30 Gen11', Validators.required],
+        serverModel: [this.serverModelDefault, Validators.required],
         allServerModels: [false],
         serverNicsList: this._formBuilder.array(
           [this.serverNicDefault]
@@ -77,42 +84,44 @@ export class AppComponent implements OnInit {
     }, { validator : ServerModelValidator });
 
     /*
+     * We have an initial server model for HP as an example
+     * where HP is the default server make
+     * However, if the user changes the server make,
+     * the default HP goes away, and error message is seen
+     * if there is a mismatch between make and model.
+     */
+    this.serverMake?.valueChanges
+      .subscribe(touch => {
+        if(!this.allServerModels?.value) {
+          this.serverModel?.setValue("");
+          this.serverModel?.markAsTouched();
+        }
+      })
+
+    /*
      * Subscribe to value changes of Allow All Server Models checkbox
      * and accordingly change the validation requirements
      * of Server Model input textbox
      */
-    this.clusterForm.get('serverDetails')?.get('allServerModels')?.valueChanges
+    this.allServerModels?.valueChanges
       .subscribe(checkedValue => {
-        const serverModelControl = this.clusterForm.get('serverDetails')?.get('serverModel');
         if (checkedValue) {
-          serverModelControl?.clearValidators();
+          this.serverModel?.clearValidators();
           this.clusterForm.clearValidators();
-          serverModelControl?.setValue('All Models');
+          this.serverModel?.setValue('All Models');
         } else {
-          serverModelControl?.setValidators([Validators.required]);
+          this.serverModel?.setValidators([Validators.required]);
           this.clusterForm.addValidators(ServerModelValidator);
         }
-        serverModelControl?.updateValueAndValidity();
+        this.serverModel?.updateValueAndValidity();
         this.clusterForm.updateValueAndValidity();
       });
   }
 
-  /*
-   * applyRecommendedConfig()
-   * This goes in reverse direction and
-   * fills form data from code.
-   * This is the recommended configuration of
-   * number of servers and configuration type
-   */
-  applyRecommendedConfig() {
-    this.clusterForm.patchValue({
-      numberOfServers: 2,
-      configType: 'High-Availability'
-    });
-  }
+  /* METHODS */
 
   /*
-   * METHODS for changing the number of Sevrer NICs
+   * Methods for changing the number of Sevrer NICs
    * We make sure there are 1-4 NICs only.
    * Also, we allow individual removals of NICs after they're added.
    * Methods are-
@@ -134,6 +143,20 @@ export class AppComponent implements OnInit {
   removeServerNic(index: number) {
     this.serverNicsList.removeAt(index);
   }
+
+  /*
+   * applyRecommendedConfig()
+   * This goes in reverse direction and
+   * fills form data from code.
+   * This is the recommended configuration of
+   * number of servers and configuration type
+   */
+    applyRecommendedConfig() {
+      this.clusterForm.patchValue({
+        numberOfServers: 2,
+        configType: 'High-Availability'
+      });
+    }
 
   /*
    * onSubmit()

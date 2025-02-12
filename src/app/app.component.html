@@ -47,7 +47,7 @@
 			<!--Server Model: Input Text-->
 			<div class="form-group">
 				<label class="clr-control-label">Server Model</label>
-				<input clrInput type="text" name="serverModel" formControlName="serverModel"
+								<input clrInput type="text" name="serverModel" formControlName="serverModel"
 					required class="form-control is-invalid"
 					[class.is-invalid]="serverModel?.invalid &&
 					serverModel?.touched &&
@@ -87,10 +87,10 @@
 					<!--Remove NIC x: Button-->
 					<button class="btn btn-link" type="button"
 						(click)="removeServerNic(i)"
-						[disabled]="!canRemoveMoreServerNics()">
+						[class.d-none]="!canRemoveMoreServerNics()">
 						Remove NIC {{ i+1 }}
 					</button>
-					<br><br>
+					<br>
 				</div>
 			</div>
 			<div *ngIf="!canAddMoreServerNics()">
@@ -100,7 +100,7 @@
 			<!--Add Another Server NIC: Button-->
 			<button class="btn btn-secondary" type="button"
 				(click)="addServerNic()"
-				[disabled]="!canAddMoreServerNics()">
+				[class.d-none]="!canAddMoreServerNics()">
 				Add Another Server NIC
 			</button>
 

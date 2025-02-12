@@ -3,7 +3,7 @@ export class Cluster {
 		public name: string = '',
 		public serverMake: string = '',
 		public serverModel: string = '',
-		public serverNic: string = '',
+		public serverNicsList: string[] = [''], 
 		public numberOfServers: number = 0,
 		public config: string = ''
 		){}

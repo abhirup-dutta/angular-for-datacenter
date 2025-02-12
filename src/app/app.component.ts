@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Cluster } from './cluster';
-import { ImagingService } from './imaging.service';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
+import { Cluster } from './shared/cluster';
+import { ImagingService } from './shared/imaging.service';
 import { ServerModelValidator } from './shared/serverModel.validator';
 
 @Component({
@@ -17,7 +17,11 @@ import { ServerModelValidator } from './shared/serverModel.validator';
 export class AppComponent implements OnInit {
   title = 'tdf';
   serverMakeOptions = ['HP' , 'Cisco', 'Dell'];
+  serverMakeDefault = this.serverMakeOptions[0];
   serverNicOptions = ['Mellanox' , 'Chelsio', 'NVIDIA'];
+  serverNicDefault = this.serverNicOptions[0];
+  serverNicMinCount = 1;
+  serverNicMaxCount = 4;
   configTypes = ['Standard' , 'High-Availability'];
   clusterModel = new Cluster();
   receivedData = '';
@@ -33,7 +37,8 @@ export class AppComponent implements OnInit {
   private _formBuilder = inject(FormBuilder);
 
   /*
-   * Getter methods for code ease in html
+   * Getter methods for ease of accessing controls
+   * both here and in html
    */
   get clusterName() {
     return this.clusterForm?.get('clusterName');
@@ -43,6 +48,9 @@ export class AppComponent implements OnInit {
   }
   get allServerModels() {
     return this.clusterForm?.get('serverDetails')?.get('allServerModels');
+  }
+  get serverNicsList() {
+    return this.clusterForm?.get('serverDetails')?.get('serverNicsList') as FormArray;
   }
   get numberOfServers() {
     return this.clusterForm?.get('numberOfServers');
@@ -57,10 +65,12 @@ export class AppComponent implements OnInit {
     this.clusterForm = this._formBuilder.group({
       clusterName: ['Cluster-1.1', [Validators.required, Validators.minLength(3)]],
       serverDetails: this._formBuilder.group({
-        serverMake: ['HP'],
+        serverMake: [this.serverMakeDefault],
         serverModel: ['HPE ProLiant ML30 Gen11', Validators.required],
         allServerModels: [false],
-        serverNic: ['Mellanox']
+        serverNicsList: this._formBuilder.array(
+          [this.serverNicDefault]
+        )
       }),
       numberOfServers: [1, Validators.required],
       configType: ['Standard']
@@ -102,6 +112,30 @@ export class AppComponent implements OnInit {
   }
 
   /*
+   * METHODS for changing the number of Sevrer NICs
+   * We make sure there are 1-4 NICs only.
+   * Also, we allow individual removals of NICs after they're added.
+   * Methods are-
+   * canAddMoreServerNics()
+   * addServerNic()
+   * canRemoveMoreServerNics()
+   * removeServerNic(input: number)
+   */
+  canAddMoreServerNics() {
+    return this.serverNicsList.length < this.serverNicMaxCount;
+  }
+  addServerNic() {
+    var newServerNic = this._formBuilder.control(this.serverNicDefault);
+    this.serverNicsList.push(newServerNic);
+  }
+  canRemoveMoreServerNics() {
+    return this.serverNicsList.length > this.serverNicMinCount;
+  }
+  removeServerNic(index: number) {
+    this.serverNicsList.removeAt(index);
+  }
+
+  /*
    * onSubmit()
    * Method for when the form is submitted via 'Configure Cluster' Button
    * We first do form manipulation,
@@ -129,9 +163,9 @@ export class AppComponent implements OnInit {
         .get('serverDetails')!
         .get('serverModel')!.value!;
     }
-    this.clusterModel.serverNic = this.clusterForm
+    this.clusterModel.serverNicsList = this.clusterForm
       .get('serverDetails')!
-      .get('serverNic')!.value!;
+      .get('serverNicsList')!.value!;
     this.clusterModel.numberOfServers = this.clusterForm.get('numberOfServers')!.value!;
     console.log("Cluster Configuration Initiated:");
     if (this.clusterModel.numberOfServers === 1) {

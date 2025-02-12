@@ -75,13 +75,34 @@
 
 			<br>
 
-			<!--Server NIC: Drop Down Menu-->
-			<div class="form-group">
-				<label class="clr-control-label">Server NIC</label>
-				<select clrSelect name="serverNic" formControlName="serverNic" class="form-control">
-					<option *ngFor="let serverNic of serverNicOptions">{{ serverNic }}</option>
-				</select>
+			<!--Server NIC: Drop Down Menu (multiple NICs)-->
+			<div formArrayName="serverNicsList">
+				<h5>Server NICs</h5>
+				<br>
+				<div *ngFor="let nic of serverNicsList.controls; let i=index">
+					<label class="clr-control-label">NIC {{ i+1 }}</label>
+					<select clrSelect class="form-control" name="nicSelection" [formControlName]="i">
+						<option *ngFor="let serverNic of serverNicOptions">{{ serverNic }}</option>
+					</select>
+					<!--Remove NIC x: Button-->
+					<button class="btn btn-link" type="button"
+						(click)="removeServerNic(i)"
+						[disabled]="!canRemoveMoreServerNics()">
+						Remove NIC {{ i+1 }}
+					</button>
+					<br><br>
+				</div>
 			</div>
+			<div *ngIf="!canAddMoreServerNics()">
+				<label clrLabel>Maximum Server NICs reached.</label>
+				<br>
+			</div>
+			<!--Add Another Server NIC: Button-->
+			<button class="btn btn-secondary" type="button"
+				(click)="addServerNic()"
+				[disabled]="!canAddMoreServerNics()">
+				Add Another Server NIC
+			</button>
 
 		</div>
 

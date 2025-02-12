@@ -2,6 +2,14 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.4.
 
+## Backend Server
+
+To start backend server, go to directory `associated-code/json-server` and run:
+
+```bash
+python3 server.py 8009
+```
+
 ## Development server
 
 To start a local development server, run:
